@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InMemory\Logger.cs" />
     <Compile Include="InMemory\Messaging\CommandBus.cs" />
     <Compile Include="InMemory\Messaging\EventBus.cs" />
     <Compile Include="InMemory\Messaging\Handling\CommandProcessor.cs" />

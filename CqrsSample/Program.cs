@@ -20,7 +20,7 @@ namespace CqrsSample
 
         static void Init()
         {
-            _logger = new InMemoryLogger();
+            _logger = new CqrsSample.Infrastructure.InMemory.Logging.Logger();
             _eventBus = new EventBus();
             _commandBus = new CommandBus();
 

@@ -1,4 +1,5 @@
-﻿using CqrsSample.Messaging.Handling;
+﻿using CqrsSample.Infrastructure.Logging;
+using CqrsSample.Messaging.Handling;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,14 +11,22 @@ namespace CqrsSample.MyDomain
 {
     public class PessoaEventHandler : IEventHandler<PessoaCriadaEvent>, IEventHandler<ErroAoCriarPessoaEvent>
     {
+        ILogger _logger;
+
+        public PessoaEventHandler(ILogger logger)
+        {
+            if (logger == null) throw new ArgumentNullException("logger");
+            _logger = logger;
+        }
+
         public void Handle(PessoaCriadaEvent @event)
         {
-            Program.Log.Add(string.Format("Evento -> Pessoa {0} criada com sucesso!", @event.Pessoa.Nome));
+            _logger.Info(string.Format("Evento -> Pessoa {0} criada com sucesso!", @event.Pessoa.Nome));
         }
 
         public void Handle(ErroAoCriarPessoaEvent @event)
         {
-            Program.Log.Add(string.Format("Evento -> Erro ao criar pessoa: {0}", @event.Mensagem));
+            _logger.Info(string.Format("Evento -> Erro ao criar pessoa: {0}", @event.Mensagem));
         }
     }
 }

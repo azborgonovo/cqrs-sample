@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CqrsSample.Messaging
 {
-    interface ICommandBus
+    public interface ICommandBus
     {
         void Send(params ICommand[] commands);
     }

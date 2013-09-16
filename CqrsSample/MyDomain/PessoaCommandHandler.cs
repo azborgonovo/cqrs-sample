@@ -1,4 +1,5 @@
-﻿using CqrsSample.Messaging;
+﻿using CqrsSample.Infrastructure.Logging;
+using CqrsSample.Messaging;
 using CqrsSample.Messaging.Handling;
 using System;
 using System.Collections.Generic;
@@ -12,18 +13,24 @@ namespace CqrsSample.MyDomain
     public class PessoaCommandHandler : ICommandHandler<InserirPessoaCommand>
     {
         IEventBus _eventBus;
+        ILogger _logger;
         RepositorioDePessoas _repositorio;
 
-        public PessoaCommandHandler(IEventBus eventBus, RepositorioDePessoas repositorio)
+        public PessoaCommandHandler(IEventBus eventBus, ILogger logger, RepositorioDePessoas repositorio)
         {
+            if (eventBus == null) throw new ArgumentNullException("eventBus");
+            if (logger == null) throw new ArgumentNullException("logger");
+            if (repositorio == null) throw new ArgumentNullException("repositorio");
+
             _eventBus = eventBus;
+            _logger = logger;
             _repositorio = repositorio;
         }
 
         public void Handle(InserirPessoaCommand command)
         {
-            Program.Log.Add(string.Format("Comando -> Inserindo a pessoa {0}...", command.Pessoa.Nome));
-
+            _logger.Info(string.Format("Comando -> Inserindo a pessoa {0}...", command.Pessoa.Nome));
+            
             try
             {
                 // Utiliza o modelo

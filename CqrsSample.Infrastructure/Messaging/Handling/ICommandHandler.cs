@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CqrsSample.Messaging.Handling
 {
-    interface ICommandHandler { }
+    public interface ICommandHandler { }
 
-    interface ICommandHandler<T> : ICommandHandler
+    public interface ICommandHandler<T> : ICommandHandler
         where T : ICommand
     {
         void Handle(T command);

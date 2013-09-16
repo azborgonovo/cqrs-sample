@@ -1,4 +1,5 @@
-﻿using CqrsSample.Messaging;
+﻿using CqrsSample.Infrastructure.Logging;
+using CqrsSample.Messaging;
 using CqrsSample.Messaging.Handling;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,23 @@ using System.Threading.Tasks;
 
 namespace CqrsSample.Implementation
 {
-    class CommandProcessor
+    public class CommandProcessor
     {
+        private ILogger _logger;
+        private int _poolDelay;
         private Dictionary<Type, ICommandHandler> handlers = new Dictionary<Type, ICommandHandler>();
+
+        public CommandProcessor(ILogger logger, int poolDelay)
+        {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
+            if (poolDelay <= 0)
+                throw new ArgumentOutOfRangeException("poolDelay");
+
+            _logger = logger;
+            _poolDelay = poolDelay;
+        }
 
         public void Start()
         {
@@ -38,7 +53,7 @@ namespace CqrsSample.Implementation
             }
 
             // Infinite loop...
-            Thread.Sleep(Program.DefaultDelay);
+            Thread.Sleep(_poolDelay);
             this.ProcessCommandQueue();
         }
 
@@ -49,14 +64,14 @@ namespace CqrsSample.Implementation
 
             if (this.handlers.TryGetValue(commandType, out handler))
             {
-                Program.Log.Add("-- Command handled by " + handler.GetType().FullName);
+                _logger.Info("-- Command handled by " + handler.GetType().FullName);
                 ((dynamic)handler).Handle((dynamic)command);
             }
 
             // There can be a generic logging/tracing/auditing handlers
             if (this.handlers.TryGetValue(typeof(ICommand), out handler))
             {
-                Program.Log.Add("-- Command handled by " + handler.GetType().FullName);
+                _logger.Info("-- Command handled by " + handler.GetType().FullName);
                 ((dynamic)handler).Handle((dynamic)command);
             }
         }

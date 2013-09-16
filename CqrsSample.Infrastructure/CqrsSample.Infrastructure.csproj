@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2726AE86-AC47-4236-A207-9D779DA95A12}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{DECEFADD-1987-4DF9-85F6-A312F8F9EFA6}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CqrsSample</RootNamespace>
-    <AssemblyName>CqrsSample</AssemblyName>
+    <RootNamespace>CqrsSample.Infrastructure</RootNamespace>
+    <AssemblyName>CqrsSample.Infrastructure</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -41,25 +39,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyDomain\PessoaJaExisteEvent.cs" />
-    <Compile Include="MyDomain\ExportarPessoaEventHandler.cs" />
-    <Compile Include="MyDomain\InserirPessoaCommand.cs" />
-    <Compile Include="MyDomain\PessoaCommandHandler.cs" />
-    <Compile Include="MyDomain\Pessoa.cs" />
-    <Compile Include="MyDomain\PessoaCriadaEvent.cs" />
-    <Compile Include="MyDomain\PessoaEventHandler.cs" />
-    <Compile Include="MyDomain\RepositorioDePessoas.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="InMemory\CommandBus.cs" />
+    <Compile Include="InMemory\EventBus.cs" />
+    <Compile Include="InMemory\Messaging\CommandProcessor.cs" />
+    <Compile Include="InMemory\Messaging\EventPublisher.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\InMemoryLogger.cs" />
+    <Compile Include="Messaging\Handling\ICommandHandler.cs" />
+    <Compile Include="Messaging\Handling\IEventHandler.cs" />
+    <Compile Include="Messaging\ICommand.cs" />
+    <Compile Include="Messaging\ICommandBus.cs" />
+    <Compile Include="Messaging\IEvent.cs" />
+    <Compile Include="Messaging\IEventBus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CqrsSample.Infrastructure\CqrsSample.Infrastructure.csproj">
-      <Project>{decefadd-1987-4df9-85f6-a312f8f9efa6}</Project>
-      <Name>CqrsSample.Infrastructure</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

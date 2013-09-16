@@ -1,4 +1,5 @@
-﻿using CqrsSample.Messaging.Handling;
+﻿using CqrsSample.Infrastructure.Logging;
+using CqrsSample.Messaging.Handling;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,9 +11,17 @@ namespace CqrsSample.MyDomain
 {
     public class ExportarPessoaEventHandler : IEventHandler<PessoaCriadaEvent>
     {
+        ILogger _logger;
+
+        public ExportarPessoaEventHandler(ILogger logger)
+        {
+            if (logger == null) throw new ArgumentNullException("logger");
+            _logger = logger;
+        }
+
         public void Handle(PessoaCriadaEvent @event)
         {
-            Program.Log.Add(string.Format("Evento -> Pessoa {0} exportada com sucesso!", @event.Pessoa.Nome));
+            _logger.Info(string.Format("Evento -> Pessoa {0} exportada com sucesso!", @event.Pessoa.Nome));
         }
     }
 }

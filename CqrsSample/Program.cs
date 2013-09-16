@@ -1,4 +1,5 @@
 ﻿using CqrsSample.Implementation;
+using CqrsSample.Infrastructure.Logging;
 using CqrsSample.Messaging;
 using CqrsSample.MyDomain;
 using System;
@@ -13,22 +14,23 @@ namespace CqrsSample
     class Program
     {
         public static int DefaultDelay = 1000;
-        public static ICollection<string> Log = new List<string>();
+        static ILogger _logger;
         static ICommandBus _commandBus;
         static IEventBus _eventBus;
 
         static void Init()
         {
+            _logger = new InMemoryLogger();
             _eventBus = new EventBus();
             _commandBus = new CommandBus();
 
-            var commandProcessor = new CommandProcessor();
-            commandProcessor.Register(new PessoaCommandHandler(_eventBus, new RepositorioDePessoas()));
+            var commandProcessor = new CommandProcessor(_logger, DefaultDelay);
+            commandProcessor.Register(new PessoaCommandHandler(_eventBus, _logger, new RepositorioDePessoas()));
             commandProcessor.Start();
 
-            var eventPublisher = new EventPublisher();
-            eventPublisher.Subscribe(new PessoaEventHandler());
-            eventPublisher.Subscribe(new ExportarPessoaEventHandler());
+            var eventPublisher = new EventPublisher(_logger, DefaultDelay);
+            eventPublisher.Subscribe(new PessoaEventHandler(_logger));
+            eventPublisher.Subscribe(new ExportarPessoaEventHandler(_logger));
             eventPublisher.Start();
         }
 
@@ -56,7 +58,7 @@ namespace CqrsSample
             Thread.Sleep(Program.DefaultDelay * 3);
             
             // Escreve os logs na tela
-            foreach (var log in Log)
+            foreach (var log in _logger.GetAllLogs())
             {
                 Console.WriteLine(log);
             }

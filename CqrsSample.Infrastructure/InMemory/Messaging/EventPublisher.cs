@@ -1,4 +1,5 @@
-﻿using CqrsSample.Messaging;
+﻿using CqrsSample.Infrastructure.Logging;
+using CqrsSample.Messaging;
 using CqrsSample.Messaging.Handling;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,21 @@ namespace CqrsSample.Implementation
 {
     public class EventPublisher
     {
+        private ILogger _logger;
+        private int _poolDelay;
         private Dictionary<Type, ICollection<IEventHandler>> handlersByEventType = new Dictionary<Type, ICollection<IEventHandler>>();
+
+        public EventPublisher(ILogger logger, int poolDelay)
+        {
+            if (logger == null)
+                throw new ArgumentNullException("logger");
+
+            if (poolDelay <= 0)
+                throw new ArgumentOutOfRangeException("poolDelay");
+
+            _logger = logger;
+            _poolDelay = poolDelay;
+        }
 
         public void Start()
         {
@@ -39,7 +54,7 @@ namespace CqrsSample.Implementation
             }
 
             // Infinite loop...
-            Thread.Sleep(Program.DefaultDelay);
+            Thread.Sleep(_poolDelay);
             this.ProcessEventQueue();
         }
 
@@ -52,7 +67,7 @@ namespace CqrsSample.Implementation
             {
                 foreach (var handler in handlers)
                 {
-                    Program.Log.Add("-- Event handled by " + handler.GetType().FullName);
+                    _logger.Info("-- Event handled by " + handler.GetType().FullName);
                     ((dynamic)handler).Handle((dynamic)@event);    
                 }
             }
@@ -62,7 +77,7 @@ namespace CqrsSample.Implementation
             {
                 foreach (var handler in handlers)
                 {
-                    Program.Log.Add("-- Event handled by " + handler.GetType().FullName);
+                    _logger.Info("-- Event handled by " + handler.GetType().FullName);
                     ((dynamic)handler).Handle((dynamic)@event);
                 }
             }
